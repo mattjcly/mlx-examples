@@ -253,8 +253,10 @@ def main():
         kv_group_size=args.kv_group_size,
         quantized_kv_start=args.quantized_kv_start,
     )
-    if not args.verbose:
+
+    if not args.verbose and mx.distributed.init().rank() == 0:
         print(response)
+    mx.synchronize()
 
 
 if __name__ == "__main__":
