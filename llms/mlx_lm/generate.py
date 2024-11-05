@@ -200,6 +200,7 @@ def main():
         model_path,
         adapter_path=args.adapter_path,
         tokenizer_config=tokenizer_config,
+        sequential_load=mx.distributed.init().size() > 1,
     )
 
     if args.use_default_chat_template:
@@ -238,6 +239,9 @@ def main():
         raise ValueError("Cannot use --colorize with --verbose=False")
     formatter = colorprint_by_t0 if args.colorize else None
 
+    world = mx.distributed.init()
+    print(f"Node {world.rank()} of {world.size()}", flush=True)
+    mx.distributed.init().barrier()
     response = generate(
         model,
         tokenizer,
