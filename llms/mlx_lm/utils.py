@@ -267,9 +267,10 @@ def generate_step(
     sampler = sampler or make_sampler(
         temp or 0.0, top_p or 0.0, min_p or 0.0, min_tokens_to_keep or 1
     )
-    logits_processors = logits_processors or make_logits_processors(
-        None, repetition_penalty, repetition_context_size or 20
-    )
+    if logits_processors is None:
+        logits_processors = make_logits_processors(
+            None, repetition_penalty, repetition_context_size or 20
+        )
     prompt_progress_callback = prompt_progress_callback or (lambda *_: None)
 
     def _step(y):
